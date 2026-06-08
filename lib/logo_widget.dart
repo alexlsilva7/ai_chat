@@ -294,7 +294,7 @@ class _ApertureLogoState extends State<ApertureLogo> with SingleTickerProviderSt
         }
 
         return CustomPaint(
-          painter: _ApertureLogoPainter(
+          painter: ApertureLogoPainter(
             color: widget.color,
             ringRotation: ringRotation,
             coreRotation: coreRotation,
@@ -321,7 +321,7 @@ class _ApertureLogoState extends State<ApertureLogo> with SingleTickerProviderSt
   }
 }
 
-class _ApertureLogoPainter extends CustomPainter {
+class ApertureLogoPainter extends CustomPainter {
   final Color color;
   final double ringRotation;
   final double coreRotation;
@@ -332,7 +332,7 @@ class _ApertureLogoPainter extends CustomPainter {
   final List<double> segmentOpacities;
   final bool useCoreGradient;
 
-  _ApertureLogoPainter({
+  ApertureLogoPainter({
     required this.color,
     required this.ringRotation,
     required this.coreRotation,
@@ -436,7 +436,7 @@ class _ApertureLogoPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _ApertureLogoPainter oldDelegate) {
+  bool shouldRepaint(covariant ApertureLogoPainter oldDelegate) {
     return oldDelegate.color != color ||
         oldDelegate.ringRotation != ringRotation ||
         oldDelegate.coreRotation != coreRotation ||
