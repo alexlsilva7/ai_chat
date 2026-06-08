@@ -8,6 +8,7 @@ import '../../../core/ui/theme/app_theme.dart';
 import '../../../domain/entities/chat_message.dart';
 import '../../../domain/entities/chat_session.dart';
 import '../../../domain/repositories/chat_repository.dart';
+import '../../../domain/repositories/settings_repository.dart';
 import '../../../domain/validators/api_key_validator.dart';
 import '../home_viewmodel.dart';
 import 'gemini_star_widget.dart';
@@ -691,11 +692,26 @@ class MockChatRepository implements ChatRepository {
       const Success(unit);
 }
 
+class MockSettingsRepository implements SettingsRepository {
+  @override
+  String get apiKey => 'mock_api_key';
+
+  @override
+  String get userName => 'Mock User';
+
+  @override
+  Future<void> saveApiKey(String key) async {}
+
+  @override
+  Future<void> saveUserName(String name) async {}
+}
+
 @Preview(name: 'Model Selector Button')
 Widget modelSelectorPreview() {
   final repo = MockChatRepository();
+  final settingsRepo = MockSettingsRepository();
   final validator = ApiKeyValidator();
-  final viewModel = HomeViewModel(repo, validator);
+  final viewModel = HomeViewModel(repo, settingsRepo, validator);
 
   return MultiProvider(
     providers: [
@@ -723,8 +739,9 @@ Widget modelSelectorPreview() {
 @Preview(name: 'Model Selection Sheet')
 Widget modelSelectionSheetPreview() {
   final repo = MockChatRepository();
+  final settingsRepo = MockSettingsRepository();
   final validator = ApiKeyValidator();
-  final viewModel = HomeViewModel(repo, validator);
+  final viewModel = HomeViewModel(repo, settingsRepo, validator);
 
   return MultiProvider(
     providers: [
@@ -749,8 +766,9 @@ Widget modelSelectionSheetPreview() {
 @Preview(name: 'Extended Model Selection Sheet')
 Widget extendedModelSelectionSheetPreview() {
   final repo = MockChatRepository();
+  final settingsRepo = MockSettingsRepository();
   final validator = ApiKeyValidator();
-  final viewModel = HomeViewModel(repo, validator);
+  final viewModel = HomeViewModel(repo, settingsRepo, validator);
 
   return MultiProvider(
     providers: [

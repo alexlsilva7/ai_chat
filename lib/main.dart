@@ -1,12 +1,15 @@
 import 'package:ai_chat/app_widget.dart';
+import 'package:ai_chat/config/dependencies.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final providers = await getAppProviders();
 
   if (kIsWeb) {
     databaseFactory = databaseFactoryFfiWeb;
@@ -15,5 +18,5 @@ void main() {
     databaseFactory = databaseFactoryFfi;
   }
 
-  runApp(const MyApp());
+  runApp(MyApp(providers: providers));
 }

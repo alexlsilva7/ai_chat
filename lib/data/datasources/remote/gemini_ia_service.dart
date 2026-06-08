@@ -16,15 +16,6 @@ class GeminiIAService implements IAService {
   }) async {
     String apiModelName = model;
 
-    // Mapeamento especial para garantir compatibilidade caso nomes legíveis sejam informados
-    if (model == 'Gemini 1.5 Flash') {
-      apiModelName = 'gemini-1.5-flash';
-    } else if (model == 'Gemini 1.5 Pro') {
-      apiModelName = 'gemini-1.5-pro';
-    } else if (model == 'Gemini 2.5 Flash') {
-      apiModelName = 'gemini-2.5-flash';
-    }
-
     final generativeModel = GenerativeModel(
       model: apiModelName,
       apiKey: apiKey,

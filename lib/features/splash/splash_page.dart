@@ -4,7 +4,7 @@ import 'package:ai_chat/features/home/home_viewmodel.dart';
 import 'package:ai_chat/data/datasources/remote/ia_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../domain/repositories/settings_repository.dart';
 import '../home/home_page.dart';
 import '../../logo_widget.dart';
 
@@ -46,8 +46,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 
   Future<void> _checkApiKey() async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = prefs.getString('gemini_api_key') ?? '';
+    final settingsRepo = context.read<SettingsRepository>();
+    final key = settingsRepo.apiKey;
     if (mounted) {
       setState(() {
         _hasApiKey = key.isNotEmpty;

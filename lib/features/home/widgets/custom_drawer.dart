@@ -1,7 +1,7 @@
 import 'package:ai_chat/features/home/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../domain/repositories/settings_repository.dart';
 import '../../../core/ui/theme/app_theme.dart';
 import '../../splash/splash_page.dart';
 
@@ -86,9 +86,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
     );
 
     if (confirm == true && mounted) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('gemini_api_key');
-      await prefs.remove('user_name');
+      final settingsRepo = context.read<SettingsRepository>();
+      await settingsRepo.saveApiKey('');
+      await settingsRepo.saveUserName('Alex');
 
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(

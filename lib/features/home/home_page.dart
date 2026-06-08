@@ -1,6 +1,7 @@
 import 'package:ai_chat/features/home/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:result_command/result_command.dart';
 import '../../core/ui/theme/app_theme.dart';
 import 'widgets/chat_bubble.dart';
 import 'widgets/chat_input.dart';
@@ -25,6 +26,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Garante que os dados sejam carregados assim que a tela abre
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeViewModel>().init();
+    });
   }
 
   @override
@@ -106,17 +111,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       _scrollToBottom(fromTop: isNewSession);
     }
 
-    if (viewModel.sendMessageError != null) {
-      final errorMessage = viewModel.sendMessageError!;
+    // Lê se o comando está no estado de Falha
+    if (viewModel.sendMessageCommand.value is FailureCommand) {
+      final error = (viewModel.sendMessageCommand.value as FailureCommand).error;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(errorMessage),
+            content: Text(error.toString().replaceAll('Exception: ', '')),
             backgroundColor: Colors.redAccent,
             duration: const Duration(seconds: 4),
           ),
         );
-        viewModel.clearSendMessageError();
+        // Retorna o comando para Idle (descanso) para não ficar mostrando o erro infinitamente
+        viewModel.sendMessageCommand.reset();
       });
     }
 
