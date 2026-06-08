@@ -6,7 +6,9 @@ import 'package:ai_chat/data/datasources/remote/ia_service.dart';
 import 'package:ai_chat/data/repositories/chat_repository_impl.dart';
 import 'package:ai_chat/domain/repositories/chat_repository.dart';
 import 'package:ai_chat/domain/validators/api_key_validator.dart';
-import 'package:ai_chat/features/home/home_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/settings_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/session_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/chat_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,12 +31,18 @@ Future<List<SingleChildWidget>> getAppProviders() async {
     ProxyProvider<SharedPreferences, SettingsRepository>(
       update: (_, prefs, previous) => SettingsRepositoryImpl(prefs),
     ),
-    ChangeNotifierProvider<HomeViewModel>(
-      create: (context) => HomeViewModel(
-        context.read<ChatRepository>(),
+    ChangeNotifierProvider<SettingsViewModel>(
+      create: (context) => SettingsViewModel(
         context.read<SettingsRepository>(),
+        context.read<ChatRepository>(),
         ApiKeyValidator(),
       ),
+    ),
+    ChangeNotifierProvider<SessionViewModel>(
+      create: (context) => SessionViewModel(context.read<ChatRepository>()),
+    ),
+    ChangeNotifierProvider<ChatViewModel>(
+      create: (context) => ChatViewModel(context.read<ChatRepository>()),
     ),
   ];
 }

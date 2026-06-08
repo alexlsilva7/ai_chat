@@ -1,5 +1,7 @@
 import 'dart:io';
-import 'package:ai_chat/features/home/home_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/settings_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/session_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/chat_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,11 +30,12 @@ class _ChatInputState extends State<ChatInput> {
       if (event is KeyDownEvent &&
           event.logicalKey == LogicalKeyboardKey.enter &&
           HardwareKeyboard.instance.isControlPressed) {
-        final viewModel = context.read<HomeViewModel>();
+        final settingsVM = context.read<SettingsViewModel>();
+        final chatVM = context.read<ChatViewModel>();
         // ignore: deprecated_member_use
-        final isRunning = viewModel.sendMessageCommand.isRunning;
-        final isApiKeyMissing = viewModel.apiKey.isEmpty;
-        final hasAttachment = viewModel.attachedImagePath != null;
+        final isRunning = chatVM.sendMessageCommand.isRunning;
+        final isApiKeyMissing = settingsVM.apiKey.isEmpty;
+        final hasAttachment = chatVM.attachedImagePath != null;
         final showSendIcon = _hasText || hasAttachment;
 
         if (!isRunning && !isApiKeyMissing && showSendIcon) {
@@ -71,7 +74,7 @@ class _ChatInputState extends State<ChatInput> {
         final savedFile = await File(image.path).copy('$path/$fileName');
 
         if (mounted) {
-          context.read<HomeViewModel>().attachImage(savedFile.path);
+          context.read<ChatViewModel>().attachImage(savedFile.path);
         }
       }
     } catch (e) {
@@ -126,32 +129,47 @@ class _ChatInputState extends State<ChatInput> {
     );
   }
 
-  void _sendMessage() {
+  void _sendMessage() async {
     final text = _textController.text.trim();
-    final viewModel = context.read<HomeViewModel>();
+    final settingsVM = context.read<SettingsViewModel>();
+    final sessionVM = context.read<SessionViewModel>();
+    final chatVM = context.read<ChatViewModel>();
 
-    if (text.isNotEmpty || viewModel.attachedImagePath != null) {
-      // Limpar os campos ANTES de executar
+    if (text.isNotEmpty || chatVM.attachedImagePath != null) {
       _textController.clear();
       _focusNode.requestFocus();
 
-      viewModel.sendMessageCommand.execute(text);
+      if (sessionVM.currentSession == null) {
+        await sessionVM.createSessionCommand.execute(settingsVM.selectedModel);
+        if (sessionVM.createSessionCommand.value.isFailure) return;
+      }
+
+      await chatVM.sendMessageCommand.execute(
+        SendMessagePayload(
+          sessionId: sessionVM.currentSession!.id,
+          model: settingsVM.selectedModel,
+          content: text,
+          imagePath: chatVM.attachedImagePath,
+        ),
+      );
+
+      if (chatVM.sendMessageCommand.value.isSuccess) {
+        sessionVM.loadSessionsCommand.execute();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeViewModel>();
+    final settingsVM = context.watch<SettingsViewModel>();
+    final chatVM = context.watch<ChatViewModel>();
 
-    return ListenableBuilder(
-      listenable: viewModel,
-      builder: (ctx, _) {
-        bool isRunning = viewModel.sendMessageCommand.value.isRunning;
-        bool isApiKeyMissing = viewModel.apiKey.isEmpty;
-        bool hasAttachment = viewModel.attachedImagePath != null;
-        bool showSendIcon = _hasText || hasAttachment;
+    bool isRunning = chatVM.sendMessageCommand.value.isRunning;
+    bool isApiKeyMissing = settingsVM.apiKey.isEmpty;
+    bool hasAttachment = chatVM.attachedImagePath != null;
+    bool showSendIcon = _hasText || hasAttachment;
 
-        return Container(
+    return Container(
           decoration: BoxDecoration(
             color: AppTheme.darkSurface.withValues(alpha: 0.95),
             border: const Border(
@@ -185,7 +203,7 @@ class _ChatInputState extends State<ChatInput> {
                             ),
                             image: DecorationImage(
                               image: FileImage(
-                                File(viewModel.attachedImagePath!),
+                                File(chatVM.attachedImagePath!),
                               ),
                               fit: BoxFit.cover,
                             ),
@@ -195,7 +213,7 @@ class _ChatInputState extends State<ChatInput> {
                           top: 4,
                           right: 4,
                           child: GestureDetector(
-                            onTap: () => viewModel.attachImage(null),
+                            onTap: () => chatVM.attachImage(null),
                             child: Container(
                               padding: const EdgeInsets.all(2),
                               decoration: const BoxDecoration(
@@ -301,7 +319,5 @@ class _ChatInputState extends State<ChatInput> {
             ],
           ),
         );
-      },
-    );
   }
 }

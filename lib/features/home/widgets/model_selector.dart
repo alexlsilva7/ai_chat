@@ -10,7 +10,7 @@ import '../../../domain/entities/chat_session.dart';
 import '../../../domain/repositories/chat_repository.dart';
 import '../../../domain/repositories/settings_repository.dart';
 import '../../../domain/validators/api_key_validator.dart';
-import '../home_viewmodel.dart';
+import '../viewmodels/settings_viewmodel.dart';
 import 'gemini_star_widget.dart';
 
 class ModelMetadata {
@@ -90,7 +90,7 @@ class ModelSelector extends StatelessWidget {
       barrierColor: Colors.black.withAlpha(160),
       builder: (modalContext) {
         return ChangeNotifierProvider.value(
-          value: context.read<HomeViewModel>(),
+          value: context.read<SettingsViewModel>(),
           child: const ModelSelectionSheet(),
         );
       },
@@ -99,7 +99,7 @@ class ModelSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeViewModel>();
+    final viewModel = context.watch<SettingsViewModel>();
     final currentModel = viewModel.selectedModel;
     final metadata = getModelMetadata(currentModel);
 
@@ -156,7 +156,7 @@ class ModelSelectionSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeViewModel>();
+    final viewModel = context.watch<SettingsViewModel>();
     final currentModel = viewModel.selectedModel;
 
     final defaultModels = [
@@ -390,7 +390,7 @@ void _showExtendedModelsBottomSheet(BuildContext context) {
     barrierColor: Colors.black.withAlpha(160),
     builder: (modalContext) {
       return ChangeNotifierProvider.value(
-        value: context.read<HomeViewModel>(),
+        value: context.read<SettingsViewModel>(),
         child: const ExtendedModelSelectionSheet(),
       );
     },
@@ -409,13 +409,13 @@ class _ExtendedModelSelectionSheetState extends State<ExtendedModelSelectionShee
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeViewModel>().loadModelsCommand.execute();
+      context.read<SettingsViewModel>().loadModelsCommand.execute();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeViewModel>();
+    final viewModel = context.watch<SettingsViewModel>();
     final models = viewModel.availableModels;
     final currentModel = viewModel.selectedModel;
     final isRunning = viewModel.loadModelsCommand.value.isRunning;
@@ -462,7 +462,7 @@ class _ExtendedModelSelectionSheetState extends State<ExtendedModelSelectionShee
                         barrierColor: Colors.black.withAlpha(160),
                         builder: (modalContext) {
                           return ChangeNotifierProvider.value(
-                            value: context.read<HomeViewModel>(),
+                            value: context.read<SettingsViewModel>(),
                             child: const ModelSelectionSheet(),
                           );
                         },
@@ -711,11 +711,11 @@ Widget modelSelectorPreview() {
   final repo = MockChatRepository();
   final settingsRepo = MockSettingsRepository();
   final validator = ApiKeyValidator();
-  final viewModel = HomeViewModel(repo, settingsRepo, validator);
+  final viewModel = SettingsViewModel(settingsRepo, repo, validator);
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<HomeViewModel>.value(value: viewModel),
+      ChangeNotifierProvider<SettingsViewModel>.value(value: viewModel),
     ],
     child: MaterialApp(
       theme: AppTheme.darkTheme,
@@ -741,11 +741,11 @@ Widget modelSelectionSheetPreview() {
   final repo = MockChatRepository();
   final settingsRepo = MockSettingsRepository();
   final validator = ApiKeyValidator();
-  final viewModel = HomeViewModel(repo, settingsRepo, validator);
+  final viewModel = SettingsViewModel(settingsRepo, repo, validator);
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<HomeViewModel>.value(value: viewModel),
+      ChangeNotifierProvider<SettingsViewModel>.value(value: viewModel),
     ],
     child: MaterialApp(
       theme: AppTheme.darkTheme,
@@ -768,11 +768,11 @@ Widget extendedModelSelectionSheetPreview() {
   final repo = MockChatRepository();
   final settingsRepo = MockSettingsRepository();
   final validator = ApiKeyValidator();
-  final viewModel = HomeViewModel(repo, settingsRepo, validator);
+  final viewModel = SettingsViewModel(settingsRepo, repo, validator);
 
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<HomeViewModel>.value(value: viewModel),
+      ChangeNotifierProvider<SettingsViewModel>.value(value: viewModel),
     ],
     child: MaterialApp(
       theme: AppTheme.darkTheme,

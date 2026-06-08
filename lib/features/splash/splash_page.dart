@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'package:ai_chat/core/ui/theme/app_theme.dart';
-import 'package:ai_chat/features/home/home_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/settings_viewmodel.dart';
 import 'package:ai_chat/data/datasources/remote/ia_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -179,11 +179,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
     if (isValid) {
       final name = _nameController.text.trim();
-      final viewModel = context.read<HomeViewModel>();
+      final settingsVM = context.read<SettingsViewModel>();
 
       // Salva nome e chave no viewModel
-      await viewModel.saveUserName(name);
-      await viewModel.saveApiKey(apiKey);
+      await settingsVM.saveUserName(name);
+      await settingsVM.saveApiKeyCommand.execute(apiKey);
 
       setState(() {
         _stage = WelcomeStage.homeTransition;
@@ -322,7 +322,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                     return AppTheme.geminiGradient.createShader(bounds);
                   },
                   child: Text(
-                    'Gemini Clone',
+                    'AI Chat',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontSize: 36,
                       fontWeight: FontWeight.w900,

@@ -1,4 +1,6 @@
-import 'package:ai_chat/features/home/home_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/settings_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/session_viewmodel.dart';
+import 'package:ai_chat/features/home/viewmodels/chat_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:result_command/result_command.dart';
@@ -28,7 +30,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     // Garante que os dados sejam carregados assim que a tela abre
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeViewModel>().init();
+      context.read<SettingsViewModel>().init();
+      context.read<SessionViewModel>().init();
     });
   }
 
@@ -87,17 +90,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeViewModel>();
-    final messages = viewModel.messages;
+    final settingsVM = context.watch<SettingsViewModel>();
+    final sessionVM = context.watch<SessionViewModel>();
+    final chatVM = context.watch<ChatViewModel>();
+    
+    final messages = chatVM.messages;
     // ignore: deprecated_member_use
-    final isRunning = viewModel.sendMessageCommand.isRunning;
+    final isRunning = chatVM.sendMessageCommand.isRunning;
 
     bool shouldScroll = false;
     bool isNewSession = false;
-    if (_lastSessionId != viewModel.currentSession?.id) {
+    if (_lastSessionId != sessionVM.currentSession?.id) {
       shouldScroll = true;
       isNewSession = true;
-      _lastSessionId = viewModel.currentSession?.id;
+      _lastSessionId = sessionVM.currentSession?.id;
     }
     if (_lastMessageCount != messages.length) {
       shouldScroll = true;
@@ -112,8 +118,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
 
     // Lê se o comando está no estado de Falha
-    if (viewModel.sendMessageCommand.value is FailureCommand) {
-      final error = (viewModel.sendMessageCommand.value as FailureCommand).error;
+    if (chatVM.sendMessageCommand.value is FailureCommand) {
+      final error = (chatVM.sendMessageCommand.value as FailureCommand).error;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -123,7 +129,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           ),
         );
         // Retorna o comando para Idle (descanso) para não ficar mostrando o erro infinitamente
-        viewModel.sendMessageCommand.reset();
+        chatVM.sendMessageCommand.reset();
       });
     }
 
@@ -136,7 +142,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             icon: const Icon(Icons.add_comment_outlined),
             tooltip: 'Nova Conversa',
             onPressed: () {
-              viewModel.createSessionCommand.execute();
+              sessionVM.createSessionCommand.execute(settingsVM.selectedModel);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Nova conversa iniciada'),
@@ -156,7 +162,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         children: [
           Expanded(
             child: messages.isEmpty && !isRunning
-                ? EmptyState(userName: viewModel.userName)
+                ? EmptyState(userName: settingsVM.userName)
                 : ListView.builder(
                     reverse: true,
                     controller: _scrollController,

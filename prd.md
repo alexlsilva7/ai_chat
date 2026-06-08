@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-**Produto:** App "Gemini Clone" (Educacional)  
+**Produto:** App "AI Chat" (Educacional)  
 **Plataforma:** Android / iOS (Flutter)  
 **Tema UI:** Dark Mode, inspirado no print fornecido  
 **Objetivo:** Criar um assistente de IA funcional que servirá como projeto prático contínuo para a disciplina de Desenvolvimento Mobile (1VA).
