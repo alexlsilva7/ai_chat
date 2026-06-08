@@ -1,74 +1,14 @@
-import 'package:sqflite/sqflite.dart';
 import '../../../domain/entities/chat_session.dart';
 import '../../../domain/entities/chat_message.dart';
-import 'database_helper.dart';
 
-class ChatLocalDataSource {
-  final DatabaseHelper _dbHelper;
-
-  ChatLocalDataSource(this._dbHelper);
-
-  Future<List<ChatSession>> getSessions() async {
-    final db = await _dbHelper.database;
-    final maps = await db.query('sessions', orderBy: 'created_at DESC');
-    return maps.map((map) => ChatSession.fromMap(map)).toList();
-  }
-
-  Future<void> saveSession(ChatSession session) async {
-    final db = await _dbHelper.database;
-    await db.insert(
-      'sessions',
-      session.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<void> deleteSession(String id) async {
-    final db = await _dbHelper.database;
-    await db.delete(
-      'sessions',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
-
-  Future<List<ChatMessage>> getMessages(String sessionId) async {
-    final db = await _dbHelper.database;
-    final maps = await db.query(
-      'messages',
-      where: 'session_id = ?',
-      whereArgs: [sessionId],
-      orderBy: 'created_at ASC',
-    );
-    return maps.map((map) => ChatMessage.fromMap(map)).toList();
-  }
-
-  Future<void> saveMessage(ChatMessage message) async {
-    final db = await _dbHelper.database;
-    await db.insert(
-      'messages',
-      message.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<void> updateSessionTitle(String sessionId, String title) async {
-    final db = await _dbHelper.database;
-    await db.update(
-      'sessions',
-      {'title': title},
-      where: 'id = ?',
-      whereArgs: [sessionId],
-    );
-  }
-
-  Future<void> updateSessionModel(String sessionId, String model) async {
-    final db = await _dbHelper.database;
-    await db.update(
-      'sessions',
-      {'model': model},
-      where: 'id = ?',
-      whereArgs: [sessionId],
-    );
-  }
+abstract class ChatLocalDataSource {
+  Future<List<ChatSession>> getSessions();
+  Future<void> saveSession(ChatSession session);
+  Future<void> deleteSession(String id);
+  
+  Future<List<ChatMessage>> getMessages(String sessionId);
+  Future<void> saveMessage(ChatMessage message);
+  
+  Future<void> updateSessionTitle(String sessionId, String title);
+  Future<void> updateSessionModel(String sessionId, String model);
 }

@@ -15,8 +15,7 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
-    with TickerProviderStateMixin {
+class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   // Controle para o splash clássico
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
@@ -83,8 +82,8 @@ class _SplashPageState extends State<SplashPage>
                 const HomePage(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
+                  return FadeTransition(opacity: animation, child: child);
+                },
             transitionDuration: const Duration(milliseconds: 500),
           ),
         );
@@ -166,10 +165,10 @@ class _SplashPageState extends State<SplashPage>
     });
 
     final startTime = DateTime.now();
-    
+
     // Validação real da chave contra o endpoint da API
     final isValid = await _validateApiKey(apiKey);
-    
+
     final elapsed = DateTime.now().difference(startTime);
     final remainingDelay = const Duration(seconds: 3) - elapsed;
     if (remainingDelay > Duration.zero) {
@@ -200,8 +199,8 @@ class _SplashPageState extends State<SplashPage>
                   const HomePage(),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
-                return FadeTransition(opacity: animation, child: child);
-              },
+                    return FadeTransition(opacity: animation, child: child);
+                  },
               transitionDuration: const Duration(milliseconds: 500),
             ),
           );
@@ -213,7 +212,8 @@ class _SplashPageState extends State<SplashPage>
         _stage = WelcomeStage.apiKeyInput;
         _apiKeyOpacity = 1.0;
         _logoAnimType = ApertureAnimationType.drawing;
-        _errorMessage = "Chave de API inválida ou sem conexão. Insira uma chave válida.";
+        _errorMessage =
+            "Chave de API inválida ou sem conexão. Insira uma chave válida.";
       });
       _apiKeyFocusNode.requestFocus();
     }
@@ -447,7 +447,11 @@ class _SplashPageState extends State<SplashPage>
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 40.0, left: 24.0, right: 24.0),
+                    padding: const EdgeInsets.only(
+                      bottom: 40.0,
+                      left: 24.0,
+                      right: 24.0,
+                    ),
                     child: AnimatedOpacity(
                       opacity: _welcomeOpacity,
                       duration: const Duration(milliseconds: 800),
@@ -485,10 +489,11 @@ class _SplashPageState extends State<SplashPage>
                               'Bem-vindo ao seu assistente de IA',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  letterSpacing: 0.5),
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             Text(
@@ -517,7 +522,9 @@ class _SplashPageState extends State<SplashPage>
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF6C3CE9).withOpacity(0.25),
+                                    color: const Color(
+                                      0xFF6C3CE9,
+                                    ).withOpacity(0.25),
                                     blurRadius: 16,
                                     offset: const Offset(0, 8),
                                   ),
@@ -589,25 +596,40 @@ class _SplashPageState extends State<SplashPage>
                             TextField(
                               controller: _nameController,
                               focusNode: _nameFocusNode,
-                              style: const TextStyle(color: Colors.white, fontSize: 16),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                               textCapitalization: TextCapitalization.words,
                               decoration: InputDecoration(
                                 hintText: 'Seu nome...',
-                                hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                                hintStyle: TextStyle(
+                                  color: Colors.white.withOpacity(0.3),
+                                ),
                                 filled: true,
                                 fillColor: const Color(0xFF131619),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 18,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
-                                  borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                                  borderSide: BorderSide(
+                                    color: Colors.white.withOpacity(0.1),
+                                  ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
-                                  borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                                  borderSide: BorderSide(
+                                    color: Colors.white.withOpacity(0.1),
+                                  ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(color: Color(0xFF6C3CE9), width: 2),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFF6C3CE9),
+                                    width: 2,
+                                  ),
                                 ),
                               ),
                             ),
@@ -628,7 +650,9 @@ class _SplashPageState extends State<SplashPage>
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF6C3CE9).withOpacity(0.25),
+                                    color: const Color(
+                                      0xFF6C3CE9,
+                                    ).withOpacity(0.25),
                                     blurRadius: 16,
                                     offset: const Offset(0, 8),
                                   ),
@@ -701,16 +725,26 @@ class _SplashPageState extends State<SplashPage>
                               controller: _apiKeyController,
                               focusNode: _apiKeyFocusNode,
                               obscureText: _obscureApiKey,
-                              style: const TextStyle(color: Colors.white, fontSize: 16),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                               decoration: InputDecoration(
                                 hintText: 'AIzaSy...',
-                                hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                                hintStyle: TextStyle(
+                                  color: Colors.white.withOpacity(0.3),
+                                ),
                                 filled: true,
                                 fillColor: const Color(0xFF131619),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 18,
+                                ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _obscureApiKey ? Icons.visibility_off : Icons.visibility,
+                                    _obscureApiKey
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
                                     color: Colors.white.withOpacity(0.5),
                                   ),
                                   onPressed: () {
@@ -721,15 +755,22 @@ class _SplashPageState extends State<SplashPage>
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
-                                  borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                                  borderSide: BorderSide(
+                                    color: Colors.white.withOpacity(0.1),
+                                  ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
-                                  borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                                  borderSide: BorderSide(
+                                    color: Colors.white.withOpacity(0.1),
+                                  ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(color: Color(0xFF6C3CE9), width: 2),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFF6C3CE9),
+                                    width: 2,
+                                  ),
                                 ),
                               ),
                             ),
@@ -738,7 +779,10 @@ class _SplashPageState extends State<SplashPage>
                               Text(
                                 _errorMessage!,
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.redAccent, fontSize: 13),
+                                style: const TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 13,
+                                ),
                               ),
                             ],
                             const SizedBox(height: 16),
@@ -747,7 +791,9 @@ class _SplashPageState extends State<SplashPage>
                               onTap: () {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Acesse: https://aistudio.google.com/'),
+                                    content: Text(
+                                      'Acesse: https://aistudio.google.com/',
+                                    ),
                                     backgroundColor: Color(0xFF6C3CE9),
                                   ),
                                 );
@@ -757,7 +803,6 @@ class _SplashPageState extends State<SplashPage>
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFF4299E1),
-                                  decoration: TextDecoration.underline,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -779,7 +824,9 @@ class _SplashPageState extends State<SplashPage>
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF6C3CE9).withOpacity(0.25),
+                                    color: const Color(
+                                      0xFF6C3CE9,
+                                    ).withOpacity(0.25),
                                     blurRadius: 16,
                                     offset: const Offset(0, 8),
                                   ),

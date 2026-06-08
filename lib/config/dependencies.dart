@@ -1,4 +1,5 @@
 import 'package:ai_chat/data/datasources/local/chat_local_datasource.dart';
+import 'package:ai_chat/data/datasources/local/chat_local_datasource_impl.dart';
 import 'package:ai_chat/data/datasources/local/database_helper.dart';
 import 'package:ai_chat/data/datasources/remote/gemini_ia_service.dart';
 import 'package:ai_chat/data/datasources/remote/ia_service.dart';
@@ -12,7 +13,7 @@ import 'package:provider/single_child_widget.dart';
 List<SingleChildWidget> get appProviders => [
   Provider<DatabaseHelper>(create: (_) => DatabaseHelper.instance),
   ProxyProvider<DatabaseHelper, ChatLocalDataSource>(
-    update: (_, dbHelper, _) => ChatLocalDataSource(dbHelper),
+    update: (_, dbHelper, _) => ChatLocalDataSourceImpl(dbHelper),
   ),
   Provider<IAService>(create: (_) => GeminiIAService()),
   ProxyProvider2<ChatLocalDataSource, IAService, ChatRepository>(
